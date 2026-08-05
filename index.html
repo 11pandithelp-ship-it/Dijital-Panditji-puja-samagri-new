@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- PWA -->
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#8b0000">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="पूजा सामग्री">
+    <title>सम्पूर्ण पूजा सामग्री प्रबंधक - Digital Pandit Ji</title>
+    <!-- html2canvas for HD Image Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #8b0000;
+            --secondary-color: #ff8c00;
+            --bg-color: #fcf8f2;
+            --card-bg: #ffffff;
+            --text-color: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 15px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto 25px auto;
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border: 2px solid #f0e68c;
+        }
+
+        /* Branding Banner (Top & Bottom) */
+        .branding-banner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            background: #fff8dc;
+            border: 1px solid #ffe4b5;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .branding-banner img {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--secondary-color);
+        }
+
+        .branding-banner p {
+            margin: 0;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .header {
+            text-align: center;
+            border-bottom: 3px double var(--primary-color);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            color: var(--primary-color);
+            margin: 5px 0;
+            font-size: 24px;
+        }
+
+        .pandit-profile {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            background: #fff8dc;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #ffe4b5;
+            margin-bottom: 25px;
+            align-items: center;
+        }
+
+        .profile-img-container {
+            width: 90px;
+            height: 90px;
+            border: 2px dashed var(--secondary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: #fff;
+            position: relative;
+        }
+
+        .profile-img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-inputs {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        input[type="text"], input[type="tel"], textarea, select {
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .section-title {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 8px 15px;
+            font-size: 16px;
+            border-radius: 5px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+            gap: 8px;
+        }
+
+        .item-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #fafafa;
+            border: 1px solid #eee;
+            padding: 6px 10px;
+            border-radius: 6px;
+        }
+
+        .item-name {
+            font-weight: 600;
+            flex: 1;
+            font-size: 14px;
+        }
+
+        .item-controls {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+
+        .qty-input {
+            width: 70px !important;
+            text-align: center;
+        }
+
+        .assign-select {
+            width: 100px !important;
+            font-size: 12px;
+        }
+
+        /* PREVIEW AREA STYLING */
+        .preview-card {
+            max-width: 850px;
+            margin: 30px auto 10px auto;
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 12px;
+            border: 3px solid var(--primary-color);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+        }
+
+        .preview-header {
+            text-align: center;
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .preview-pandit-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background: #fdf5e6;
+            padding: 12px 18px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .preview-pandit-info img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 2px solid var(--primary-color);
+            object-fit: cover;
+        }
+
+        .preview-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .preview-table th, .preview-table td {
+            border: 1px solid #ddd;
+            padding: 8px 12px;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        .preview-table th {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .badge-yajman {
+            background-color: #e6f4ea;
+            color: #137333;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .badge-pandit {
+            background-color: #feefc3;
+            color: #b06000;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .btn-container {
+            text-align: center;
+            margin: 20px 0 40px 0;
+        }
+
+        .btn-download {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .footer {
+            text-align: center;
+            border-top: 1px solid #ddd;
+            padding-top: 15px;
+            font-size: 14px;
+            color: #555;
+            margin-top: 20px;
+        }
+
+        .whatsapp-btn {
+            display: inline-block;
+            background-color: #25D366;
+            color: white;
+            font-weight: bold;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            margin-top: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+        }
+    </style>
+</head>
+<body>
+
+<!-- फॉर्म सेक्शन -->
+<div class="container">
+    <!-- टॉप ब्रांडिंग बैनर (Logo Top) -->
+    <div class="branding-banner">
+        <img src="logo.png" alt="Digital Pandit Ji Logo">
+        <p>इसी तरह के कर्मकांडी उपयोगी गेजेट्स के लिए हमारे वाट्सएप समुह में जरुर जुड़े</p>
+    </div>
+
+    <div class="header">
+        <h1>🪔 पूजा सामग्री चयन फॉर्म 🪔</h1>
+        <p style="margin:2px; font-size:13px; color:#666;">सामग्री चुनें और मात्रा/जिम्मेदारी भरें, नीचे लिस्ट लाइव तैयार होती जाएगी</p>
+    </div>
+
+    <!-- पंडित जी प्रोफाइल -->
+    <div class="pandit-profile">
+        <div class="profile-img-container">
+            <img id="profile-preview" src="" alt="फोटो" style="display:none;">
+            <span id="img-placeholder" style="font-size: 11px; color: #888; text-align:center;">फोटो अपलोड</span>
+            <input type="file" id="img-input" accept="image/*" onchange="previewImage(event)" style="position:absolute; opacity:0; width:100%; height:100%; cursor:pointer;">
+        </div>
+        <div class="profile-inputs">
+            <div>
+                <label style="font-size:12px; font-weight:bold;">पंडित जी का नाम:</label>
+                <input type="text" id="p-name" placeholder="नाम लिखें" oninput="updatePreview()">
+            </div>
+            <div>
+                <label style="font-size:12px; font-weight:bold;">संपर्क सूत्र (Mobile):</label>
+                <input type="tel" id="p-phone" placeholder="फोन नंबर" oninput="updatePreview()">
+            </div>
+            <div style="grid-column: span 2;">
+                <label style="font-size:12px; font-weight:bold;">पता (Address):</label>
+                <input type="text" id="p-address" placeholder="पता लिखें" oninput="updatePreview()">
+            </div>
+        </div>
+    </div>
+
+    <!-- सामग्री सूची CONTAINER -->
+    <div id="samagri-container"></div>
+
+    <!-- नोट/अतिरिक्त सामग्री -->
+    <div style="margin-top: 20px;">
+        <h3 style="color: var(--primary-color); margin-bottom: 5px; font-size:16px;">📝 विशेष नोट / अन्य अतिरिक्त सामग्री:</h3>
+        <textarea id="custom-notes" rows="3" placeholder="यदि कुछ छूट गया हो या विशेष निर्देश हो तो यहाँ लिखें..." oninput="updatePreview()"></textarea>
+    </div>
+</div>
+
+<!-- ========================================== -->
+<!-- तैयार प्रीव्यू लिस्ट (LIVE PREVIEW AREA) -->
+<!-- ========================================== -->
+<div class="preview-card" id="preview-area">
+    <!-- प्रीव्यू टॉप बैनर (Logo Top) -->
+    <div class="branding-banner">
+        <img src="logo.png" alt="Digital Pandit Ji Logo">
+        <p>इसी तरह के कर्मकांडी उपयोगी गेजेट्स के लिए हमारे वाट्सएप समुह में जरुर जुड़े</p>
+    </div>
+
+    <div class="preview-header">
+        <h2 style="color: var(--primary-color); margin: 0;">🪔 शुभ पूजा सामग्री सूची 🪔</h2>
+    </div>
+
+    <!-- पंडित जी प्रोफाइल प्रीव्यू -->
+    <div class="preview-pandit-info" id="view-pandit-box">
+        <img id="view-img" src="logo.png" alt="पंडित जी">
+        <div>
+            <h3 id="view-name" style="margin: 0 0 5px 0; color: var(--primary-color);">पंडित जी का नाम</h3>
+            <p id="view-phone" style="margin: 0 0 3px 0; font-size: 14px;"><b>मो:</b> -</p>
+            <p id="view-address" style="margin: 0; font-size: 13px; color: #555;"><b>पता:</b> -</p>
+        </div>
+    </div>
+
+    <!-- चयनित सामग्री तालिका -->
+    <table class="preview-table">
+        <thead>
+            <tr>
+                <th style="width: 50px;">क्र.</th>
+                <th>सामग्री का नाम</th>
+                <th style="width: 100px;">मात्रा</th>
+                <th style="width: 120px;">कौन लाएगा?</th>
+            </tr>
+        </thead>
+        <tbody id="preview-tbody">
+            <tr>
+                <td colspan="4" style="text-align: center; color: #888;">कृपया ऊपर सूची में से मात्रा एवं जिम्मेदारी का चयन करें...</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- नोट प्रीव्यू -->
+    <div id="view-notes-box" style="margin-top: 15px; display: none; background: #fff8dc; padding: 10px; border-radius: 5px; border-left: 4px solid var(--secondary-color);">
+        <strong>विशेष नोट:</strong> <span id="view-notes-text"></span>
+    </div>
+
+    <!-- बॉटम बैनर एवं व्हाट्सएप ग्रुप लिंक (Logo Bottom) -->
+    <div class="footer">
+        <div class="branding-banner" style="margin-bottom: 10px;">
+            <img src="logo.png" alt="Digital Pandit Ji Logo">
+            <p>इसी तरह के कर्मकांडी उपयोगी गेजेट्स के लिए हमारे वाट्सएप समुह में जरुर जुड़े</p>
+        </div>
+        <a class="whatsapp-btn" href="https://chat.whatsapp.com/BBjRzjHJ4vBFFmh7EhbzwR?s=cl&p=a&mlu=4" target="_blank">
+            💬 व्हाट्सएप ग्रुप से जुड़ें
+        </a>
+    </div>
+</div>
+
+<!-- डाउनलोड बटन -->
+<div class="btn-container">
+    <button class="btn-download" onclick="downloadHDImage()">📸 HD लिस्ट डाउनलोड करें</button>
+</div>
+
+<script>
+const samagriData = [
+    { category: "🌸 1. फूल एवं पत्तियां", items: ["गुलाब", "गेंदा", "कमल", "चमेली", "मोगरा", "चंपा", "बेला", "पारिजात", "गुड़हल", "कनेर", "अपराजिता", "आक के फूल", "धतूरे के फूल", "तुलसी दल", "बेलपत्र", "दूर्वा", "शमी पत्र", "आम के पत्ते", "अशोक के पत्ते", "केले के पत्ते", "पान के पत्ते", "फूलों की माला", "बंदनवार/तोरण"] },
+    { category: "🍎 2. फल", items: ["केला", "नारियल", "सेब", "संतरा", "मौसमी", "अनार", "अंगूर", "अमरूद", "पपीता", "आम", "बेर", "नींबू", "नारियल पानी", "सिंघाड़ा", "सीताफल", "अन्य मौसमी फल"] },
+    { category: "🪨 3. मिट्टी/मिट्टी से बनी सामग्री", items: ["मिट्टी का कलश", "मिट्टी का दीपक", "मिट्टी की हांडी", "मिट्टी की कटोरी", "मिट्टी की थाली", "मिट्टी का पात्र", "मिट्टी की वेदी", "मिट्टी/गोबर से बनी पूजा वेदी", "पूजा की मिट्टी", "गंगा/तीर्थ की मिट्टी", "सप्तमृत्तिका हेतु मिट्टी"] },
+    { category: "🔔 4. धातु की सामग्री", items: ["तांबे का कलश", "तांबे का लोटा", "तांबे की थाली", "तांबे की कटोरी", "पंचपात्र", "आचमनी", "पूजा घंटी", "शंख", "आरती दीपक", "धूपदान", "कपूरदानी", "हवन स्रुवा", "पूजा चम्मच", "पीतल का कलश", "पीतल का दीपक", "पीतल की थाली", "चांदी का सिक्का", "सोने का सिक्का/पत्र", "पंचधातु सामग्री", "नवधातु सामग्री"] },
+    { category: "🪵 5. लकड़ी एवं प्राकृतिक सामग्री", items: ["आम की लकड़ी", "हवन समिधा", "पीपल की समिधा", "पलाश की समिधा", "शमी की समिधा", "बेर की समिधा", "चंदन की लकड़ी", "नारियल की लकड़ी/छिलका", "लकड़ी की पूजा चौकी", "लकड़ी का बाजोट"] },
+    { category: "🧂 6. सूखा सामान — मसाले एवं पूजा द्रव्य", items: ["हल्दी पाउडर", "हल्दी की गांठ", "रोली", "कुमकुम", "सिंदूर", "चंदन पाउडर", "अष्टगंध", "केसर", "भस्म", "गोपी चंदन", "अबीर", "गुलाल", "अक्षत/चावल", "जौ", "काला तिल", "सफेद तिल", "गेहूं", "मूंग", "उड़द", "चना", "मसूर", "मटर", "नवधान्य", "सुपारी", "लौंग", "छोटी इलायची", "बड़ी इलायची", "जायफल", "जावित्री", "दालचीनी", "कपूर", "मिश्री", "गुड़", "बताशा", "गूगल", "लोबान", "धूप", "हवन सामग्री", "नवग्रह सामग्री", "पंचमेवा", "सूखा नारियल/गोला", "नारियल की गिरी"] },
+    { category: "🥜 7. मेवा एवं खाद्य सूखा सामान", items: ["काजू", "बादाम", "किशमिश", "अखरोट", "पिस्ता", "चिरौंजी", "मखाना", "छुहारा", "खजूर", "नारियल बुरादा", "तिल"] },
+    { category: "🥛 8. गीला सामान / तरल सामग्री", items: ["जल", "गंगाजल", "दूध", "दही", "घी", "शहद", "पंचामृत", "नारियल पानी", "गन्ने का रस", "इत्र", "गुलाब जल", "चमेली का तेल", "सरसों का तेल", "तिल का तेल"] },
+    { category: "🌾 9. अनाज एवं खाद्य सामग्री", items: ["चावल", "गेहूं का आटा", "सूजी", "बेसन", "दाल", "चना", "गुड़", "चीनी", "शक्कर", "मिश्री", "नमक", "घी", "तेल", "फलाहार सामग्री", "प्रसाद बनाने की सामग्री", "खीर सामग्री"] },
+    { category: "🧵 10. कपड़ा एवं वस्त्र", items: ["लाल कपड़ा", "पीला कपड़ा", "सफेद कपड़ा", "काला कपड़ा", "हरा कपड़ा", "लाल चुनरी", "देवी वस्त्र", "देवता वस्त्र", "कलश वस्त्र", "आसन वस्त्र", "जनेऊ", "मौली/कलावा", "सूती धागा", "रक्षा सूत्र"] },
+    { category: "🪔 11. दीपक एवं अग्नि सामग्री", items: ["रूई", "बत्ती", "घी", "सरसों का तेल", "तिल का तेल", "कपूर", "माचिस", "लाइटर", "दीपक", "पंचमुखी दीपक", "अखंड दीपक", "दीपक स्टैंड"] },
+    { category: "🪷 12. पूजा सजावट एवं श्रृंगार", items: ["लाल चुनरी", "बिंदी", "सिंदूर", "चूड़ी", "मेहंदी", "काजल", "इत्र", "फूलों की माला", "आसन", "पूजा चौकी", "रंगोली", "कलावा सजावट", "तोरण", "बंदनवार"] },
+    { category: "🕉️ 13. देव प्रतिमा एवं पूजा सामग्री", items: ["गणेश जी की प्रतिमा", "शिवलिंग", "शिव परिवार प्रतिमा", "श्रीराम दरबार", "हनुमान जी की प्रतिमा", "राधा-कृष्ण प्रतिमा", "विष्णु जी की प्रतिमा", "लक्ष्मी जी की प्रतिमा", "दुर्गा माता की प्रतिमा", "नवग्रह प्रतिमा", "सत्यनारायण भगवान का चित्र", "वास्तु पुरुष चित्र"] },
+    { category: "📿 14. यंत्र एवं धार्मिक सामग्री", items: ["श्री यंत्र", "वास्तु यंत्र", "नवग्रह यंत्र", "महामृत्युंजय यंत्र", "कुबेर यंत्र", "रुद्राक्ष माला", "तुलसी माला", "जाप माला", "मंत्र पुस्तक", "पूजा पुस्तक", "श्रीरामचरितमानस", "सुंदरकांड पुस्तक", "श्रीमद्भागवत", "सत्यनारायण कथा पुस्तक"] },
+    { category: "🔥 15. हवन सामग्री", items: ["हवन कुंड", "हवन समिधा", "हवन सामग्री मिश्रण", "घी", "जौ", "तिल", "चावल", "गुड़", "सूखा नारियल", "गूगल", "लोबान", "चंदन", "कपूर", "पंचमेवा", "नवधान्य", "पूर्णाहुति सामग्री", "पूर्णाहुति नारियल", "पूर्णाहुति वस्त्र", "हवन स्रुवा"] },
+    { category: "🧹 16. पूजा उपयोगी सामान्य सामान", items: ["पूजा थाली", "कटोरी", "चम्मच", "जल पात्र", "पंचपात्र", "आचमनी", "पूजा साफ करने का वस्त्र", "रुई", "टिश्यू/कपड़ा", "कैंची", "चाकू", "रस्सी/डोरी", "कागज", "पेन", "कूड़ा बैग", "डिस्पोजेबल प्लेट", "दोना", "पत्तल", "गिलास"] },
+    { category: "🙏 17. श्राद्ध एवं पितृ कर्म की सामग्री", items: ["कुशा", "काला तिल", "जौ", "चावल", "आटा", "दूध", "दही", "घी", "शहद", "गंगाजल", "पिंड सामग्री", "पत्तल", "दोना", "ब्राह्मण भोजन सामग्री", "वस्त्र", "जनेऊ", "दक्षिणा", "गौ-ग्रास सामग्री"] },
+    { category: "💰 18. दक्षिणा एवं दान सामग्री", items: ["दक्षिणा", "दक्षिणा लिफाफा", "सिक्के", "चावल", "गेहूं", "तिल", "गुड़", "वस्त्र", "फल", "मिठाई", "अन्न दान सामग्री", "ब्राह्मण दान सामग्री"] }
+];
+
+let itemIndexCounter = 0;
+
+function renderList() {
+    const container = document.getElementById('samagri-container');
+    container.innerHTML = '';
+
+    samagriData.forEach((sec) => {
+        const title = document.createElement('div');
+        title.className = 'section-title';
+        title.innerText = sec.category;
+        container.appendChild(title);
+
+        const grid = document.createElement('div');
+        grid.className = 'items-grid';
+
+        sec.items.forEach((item) => {
+            itemIndexCounter++;
+            const row = document.createElement('div');
+            row.className = 'item-row';
+            row.innerHTML = `
+                <span class="item-name">${item}</span>
+                <div class="item-controls">
+                    <input type="text" class="qty-input" id="qty-${itemIndexCounter}" data-name="${item}" placeholder="मात्रा" oninput="updatePreview()">
+                    <select class="assign-select" id="assign-${itemIndexCounter}" data-name="${item}" onchange="updatePreview()">
+                        <option value="none">-- चुनें --</option>
+                        <option value="यजमान">यजमान</option>
+                        <option value="पंडित जी">पंडित जी</option>
+                    </select>
+                </div>
+            `;
+            grid.appendChild(row);
+        });
+
+        container.appendChild(grid);
+    });
+}
+
+// फोटो प्रीव्यू
+function previewImage(event) {
+    const reader = new FileReader();
+    reader.onload = function(){
+        document.getElementById('profile-preview').src = reader.result;
+        document.getElementById('profile-preview').style.display = 'block';
+        document.getElementById('img-placeholder').style.display = 'none';
+        document.getElementById('view-img').src = reader.result;
+    };
+    if(event.target.files[0]) {
+        reader.readAsDataURL(event.target.files[0]);
+    }
+}
+
+// लाइव प्रीव्यू अपडेट
+function updatePreview() {
+    const name = document.getElementById('p-name').value;
+    const phone = document.getElementById('p-phone').value;
+    const address = document.getElementById('p-address').value;
+
+    document.getElementById('view-name').innerText = name || "पंडित जी का नाम";
+    document.getElementById('view-phone').innerHTML = `<b>मो:</b> ${phone || '-'}`;
+    document.getElementById('view-address').innerHTML = `<b>पता:</b> ${address || '-'}`;
+
+    const tbody = document.getElementById('preview-tbody');
+    tbody.innerHTML = '';
+
+    let count = 0;
+
+    for (let i = 1; i <= itemIndexCounter; i++) {
+        const qtyVal = document.getElementById(`qty-${i}`).value.trim();
+        const assignVal = document.getElementById(`assign-${i}`).value;
+        const itemName = document.getElementById(`qty-${i}`).getAttribute('data-name');
+
+        if (qtyVal !== "" || assignVal !== "none") {
+            count++;
+            const tr = document.createElement('tr');
+            
+            let badgeClass = assignVal === "यजमान" ? "badge-yajman" : (assignVal === "पंडित जी" ? "badge-pandit" : "");
+            let assignText = assignVal !== "none" ? `<span class="${badgeClass}">${assignVal}</span>` : "-";
+
+            tr.innerHTML = `
+                <td>${count}</td>
+                <td><strong>${itemName}</strong></td>
+                <td>${qtyVal || "-"}</td>
+                <td>${assignText}</td>
+            `;
+            tbody.appendChild(tr);
+        }
+    }
+
+    if (count === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #888;">कृपया ऊपर सूची में से मात्रा एवं जिम्मेदारी का चयन करें...</td></tr>`;
+    }
+
+    const notes = document.getElementById('custom-notes').value.trim();
+    const notesBox = document.getElementById('view-notes-box');
+    if (notes) {
+        notesBox.style.display = 'block';
+        document.getElementById('view-notes-text').innerText = notes;
+    } else {
+        notesBox.style.display = 'none';
+    }
+}
+
+// HD इमेज डाउनलोड
+function downloadHDImage() {
+    const element = document.getElementById('preview-area');
+
+    html2canvas(element, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#ffffff'
+    }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'Pooja-Samagri-List.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+    });
+}
+
+window.onload = renderList;
+</script>
+
+
+<script>
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./service-worker.js")
+            .then(registration => {
+                console.log("PWA Service Worker registered:", registration.scope);
+            })
+            .catch(error => {
+                console.error("Service Worker registration failed:", error);
+            });
+    });
+}
+</script>
+
+</body>
+</html>
