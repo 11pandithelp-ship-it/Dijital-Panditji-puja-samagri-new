@@ -628,6 +628,215 @@ function openDonationUPI() {
     window.location.href = "upi://pay?" + params.toString();
 }
 </script>
+<!-- ================= PWA INSTALL POPUP ================= -->
 
+<style>
+#pwaInstallOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999999;
+    padding: 20px;
+}
+
+#pwaInstallBox {
+    width: 100%;
+    max-width: 380px;
+    background: #fffdf5;
+    border-radius: 22px;
+    padding: 28px 22px;
+    text-align: center;
+    box-shadow: 0 15px 50px rgba(0,0,0,.4);
+    animation: pwaPopup .35s ease;
+}
+
+@keyframes pwaPopup {
+    from {
+        transform: scale(.75);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.pwaIcon {
+    width: 85px;
+    height: 85px;
+    border-radius: 20px;
+    object-fit: cover;
+    margin-bottom: 12px;
+}
+
+#pwaInstallBox h2 {
+    margin: 5px 0 10px;
+    color: #8b0000;
+    font-size: 23px;
+}
+
+#pwaInstallBox p {
+    color: #444;
+    font-size: 15px;
+    line-height: 1.6;
+    margin: 8px 0 18px;
+}
+
+#pwaInstallButton {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 30px;
+    background: #8b0000;
+    color: white;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(139,0,0,.3);
+}
+
+#pwaInstallButton:active {
+    transform: scale(.97);
+}
+
+.pwaNote {
+    font-size: 12px !important;
+    color: #777 !important;
+    margin-top: 14px !important;
+}
+
+/* App install होने के बाद popup छिप जाएगा */
+.pwa-installed #pwaInstallOverlay {
+    display: none !important;
+}
+</style>
+
+<div id="pwaInstallOverlay">
+
+    <div id="pwaInstallBox">
+
+        <img
+            src="./icon-192.png"
+            class="pwaIcon"
+            alt="Digital Pandit Ji">
+
+        <h2>🪔 Digital Pandit Ji</h2>
+
+        <p>
+            पूजा सामग्री की पूरी सुविधा इस्तेमाल करने के लिए
+            पहले इस App को अपने मोबाइल में Install करें।
+        </p>
+
+        <button id="pwaInstallButton">
+            📲 अभी App Install करें
+        </button>
+
+        <p class="pwaNote">
+            Install करने के बाद App को Home Screen से खोलें।
+        </p>
+
+    </div>
+
+</div>
+
+<script>
+
+let deferredPrompt = null;
+
+const installOverlay =
+    document.getElementById("pwaInstallOverlay");
+
+const installButton =
+    document.getElementById("pwaInstallButton");
+
+/* Check: अगर App पहले से installed है */
+function checkIfInstalled() {
+
+    if (
+        window.matchMedia("(display-mode: standalone)").matches ||
+        window.navigator.standalone === true
+    ) {
+        document.body.classList.add("pwa-installed");
+        return true;
+    }
+
+    return false;
+}
+
+checkIfInstalled();
+
+
+/*
+   Chrome Android जब PWA install करने के लिए तैयार होता है,
+   तब यह event मिलता है।
+*/
+window.addEventListener("beforeinstallprompt", function(event) {
+
+    event.preventDefault();
+
+    deferredPrompt = event;
+
+    console.log("PWA install prompt available");
+
+});
+
+
+/* Install button */
+installButton.addEventListener("click", async function() {
+
+    /* अगर browser ने native install prompt दिया है */
+    if (deferredPrompt) {
+
+        deferredPrompt.prompt();
+
+        const result = await deferredPrompt.userChoice;
+
+        console.log(
+            "Install result:",
+            result.outcome
+        );
+
+        deferredPrompt = null;
+
+        return;
+    }
+
+
+    /*
+       अगर native prompt उपलब्ध नहीं है
+       तो user को manual installation बताएं।
+    */
+    alert(
+        "Install option अभी browser ने उपलब्ध नहीं कराया है।\n\n" +
+        "Chrome के ऊपर ⋮ Menu दबाएँ और\n" +
+        "“Install app” या “Add to Home screen” चुनें।"
+    );
+
+});
+
+
+/* Installation complete */
+window.addEventListener("appinstalled", function() {
+
+    console.log("Digital Pandit Ji installed");
+
+    document.body.classList.add("pwa-installed");
+
+});
+
+
+/* अगर standalone mode में वापस आए */
+window.addEventListener("pageshow", function() {
+
+    setTimeout(checkIfInstalled, 500);
+
+});
+
+</script>
+
+<!-- ================= END PWA INSTALL POPUP ================= -->
 </body>
 </html>
