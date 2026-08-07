@@ -291,6 +291,27 @@
 </head>
 <body>
 
+<!-- HOW TO USE VIDEO SECTION -->
+<div class="container" id="how-to-use-video" style="margin-top:15px;">
+    <div class="section-title">🎥 इस App का उपयोग कैसे करें?</div>
+    <div style="background:#fff8dc;border:1px solid #e5c77a;border-radius:12px;padding:10px;">
+        <iframe width="100%" style="display:block;border:0;border-radius:10px;aspect-ratio:9/16;max-height:520px;"
+            src="https://www.youtube.com/embed/kMvnHj_pIQE"
+            title="Digital Pandit Ji - Pooja Samagri App How To Use"
+            loading="lazy"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen></iframe>
+    </div>
+</div>
+
+<!-- ADSTERRA SECTION -->
+<div class="container" id="ad-top" style="margin-top:15px;text-align:center;">
+    <div style="font-size:11px;color:#888;margin-bottom:4px;">Advertisement</div>
+    <script async="async" data-cfasync="false" src="https://pl30727583.effectivecpmnetwork.com/a960f0fe8011c5ef296986ce86f83e4d/invoke.js"></script>
+    <div id="container-a960f0fe8011c5ef296986ce86f83e4d"></div>
+</div>
+
+
 <!-- फॉर्म सेक्शन -->
 <div class="container">
     <!-- टॉप ब्रांडिंग बैनर (Logo Top) -->
@@ -555,6 +576,56 @@ if ("serviceWorker" in navigator) {
                 console.error("Service Worker registration failed:", error);
             });
     });
+}
+</script>
+
+
+<!-- DONATION UPI SECTION -->
+<div class="container" id="donation-section" style="margin:25px 0 15px;">
+    <div class="section-title">🙏 सहयोग / Donation</div>
+    <div style="background:linear-gradient(180deg,#fff8dc,#fffdf4);border:2px solid #e3b341;border-radius:14px;padding:18px;text-align:center;">
+        <div style="font-size:28px;">🪔🙏</div>
+        <p style="font-size:15px;line-height:1.6;margin:8px 0 14px;">
+            आप अपनी खुशी से इस UPI पर Donation दे सकते हैं,
+            जिससे हमारी टीम आपके ब्राह्मण बंधुओं के लिए
+            <b>फ्री में उपयोगी गैजेट्स</b> बनाती रहे।
+        </p>
+        <div style="background:#fff;border:1px dashed #8b0000;border-radius:10px;padding:12px;margin:10px 0 12px;">
+            <div style="font-size:12px;color:#777;">UPI ID</div>
+            <div style="font-size:18px;font-weight:700;color:#8b0000;word-break:break-all;">
+                fino.9986538962@finobank
+            </div>
+        </div>
+        <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+            <button type="button" onclick="copyDonationUPI()" style="background:#8b0000;color:#fff;border:0;border-radius:22px;padding:11px 18px;font-weight:bold;cursor:pointer;">📋 UPI Copy करें</button>
+            <button type="button" onclick="openDonationUPI()" style="background:#138a3d;color:#fff;border:0;border-radius:22px;padding:11px 18px;font-weight:bold;cursor:pointer;">💳 UPI से Donate करें</button>
+        </div>
+        <div id="donation-status" style="font-size:12px;color:#666;margin-top:10px;"></div>
+    </div>
+</div>
+
+<script>
+function copyDonationUPI() {
+    const upi = "fino.9986538962@finobank";
+    const status = document.getElementById("donation-status");
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(upi).then(() => {
+            status.textContent = "✅ UPI ID copy हो गई।";
+        }).catch(() => {
+            status.textContent = "UPI ID: " + upi;
+        });
+    } else {
+        status.textContent = "UPI ID: " + upi;
+    }
+}
+
+function openDonationUPI() {
+    const params = new URLSearchParams({
+        pa: "fino.9986538962@finobank",
+        pn: "Digital Pandit Ji",
+        cu: "INR"
+    });
+    window.location.href = "upi://pay?" + params.toString();
 }
 </script>
 
