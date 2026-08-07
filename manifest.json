@@ -2,22 +2,22 @@
   "name": "सम्पूर्ण पूजा सामग्री प्रबंधक",
   "short_name": "पूजा सामग्री",
   "description": "Digital Pandit Ji का पूजा सामग्री चयन एवं प्रबंधन ऐप",
-  "start_url": "./",
-  "scope": "./",
+  "start_url": "/Dijital-Panditji-puja-samagri-new/",
+  "scope": "/Dijital-Panditji-puja-samagri-new/",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#fcf8f2",
+  "background_color": "#fffcf2",
   "theme_color": "#8b0000",
   "lang": "hi",
   "icons": [
     {
-      "src": "./icon-192.png",
+      "src": "/Dijital-Panditji-puja-samagri-new/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "./icon-512.png",
+      "src": "/Dijital-Panditji-puja-samagri-new/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
